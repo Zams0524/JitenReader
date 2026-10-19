@@ -24,6 +24,14 @@ import { HTMLProfileSelectorElement } from './elements/html-profile-selector-ele
 import { HTMLReaderThemeInputElement } from './elements/html-reader-theme-input-element';
 import { HTMLWordStyleEditorElement } from './elements/html-word-style-editor-element';
 
+// Yoru Reader opens this page with ?theme=dark|light to match the app
+{
+  const theme = new URLSearchParams(window.location.search).get('theme') ?? 'dark';
+
+  document.documentElement.className = `${theme}-mode`;
+  document.documentElement.setAttribute('data-theme', theme);
+}
+
 customElements.define('mining-input', HTMLMiningInputElement);
 customElements.define('reader-theme-input', HTMLReaderThemeInputElement);
 customElements.define('profile-selector', HTMLProfileSelectorElement);
@@ -453,6 +461,11 @@ function parseCondition(expr: string): boolean {
 
     // Property name
     next();
+
+    // Yoru Reader always parses through its local server, so API-key gated sections stay visible
+    if (token === 'jitenApiKey') {
+      return true;
+    }
 
     const value = localConfiguration.get(token as keyof ConfigurationSchema);
 

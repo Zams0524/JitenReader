@@ -20,8 +20,9 @@ export const DEFAULT_CONFIGURATION = Object.freeze<ConfigurationSchema>({
 
   //#region JPDB Integration
 
-  jitenApiKey: '',
-  jitenApiEndpoint: 'https://api.jiten.moe/api',
+  // Yoru Reader: parse through the desktop app's local server (see apps/yoru/local-parse.ts)
+  jitenApiKey: 'local',
+  jitenApiEndpoint: 'http://127.0.0.1:23280',
 
   //#endregion
   //#region Mining configuration

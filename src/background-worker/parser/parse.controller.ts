@@ -40,11 +40,11 @@ export class ParseController {
   }
 
   private succeedSequence(sequenceId: number, tokens: JitenToken[], sender: MessageSender): void {
-    new SequenceSuccessCommand(sequenceId, tokens).send(sender.tab!.id!);
+    new SequenceSuccessCommand(sequenceId, tokens).send(sender.tab?.id);
   }
 
   private failSequence(sequenceId: number, error: Error, sender: MessageSender): void {
-    new SequenceErrorCommand(sequenceId, error.message).send(sender.tab!.id!);
+    new SequenceErrorCommand(sequenceId, error.message).send(sender.tab?.id);
   }
 
   private getParagraphBatches(): Batch[] {

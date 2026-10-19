@@ -23,15 +23,26 @@ export const DEFAULT_HOSTS: PredefinedHostMeta[] = [
     id: 'ttsu-parser',
     name: 'Ttsu Parser',
     description: 'Parses the ebook reader Ttsu',
-    host: '*://reader.ttsu.app/*',
+    // Yoru Reader renders its reader with ttsu's markup, on file:// and localhost
+    host: '<all_urls>',
     auto: true,
     optOut: true,
     allFrames: false,
-    custom: 'TtsuParser',
+    custom: 'YoruParser',
     parseVisibleObserver: true,
     addedObserver: {
       notifyFor: 'div.book-content',
     },
+  },
+  {
+    id: 'yoru-parser',
+    name: 'Yoru Parser',
+    description: 'Native parser for Yoru Reader',
+    host: '<all_urls>',
+    auto: true,
+    optOut: true,
+    allFrames: false,
+    custom: 'YoruParser',
   },
   {
     id: 'asbplayer-parser',
@@ -185,24 +196,6 @@ export const DEFAULT_HOSTS: PredefinedHostMeta[] = [
     parseVisibleObserver: true,
     addedObserver: {
       notifyFor: 'p',
-      checkNested: 'div',
-    },
-  },
-  {
-    id: 'yatsu-parser',
-    name: 'Yatsu Parser',
-    description: 'Parses the ebook reader Yatsu',
-    host: '*://app.yatsu.moe/b*',
-    auto: true,
-    optOut: true,
-    allFrames: false,
-    custom: 'YatsuParser',
-    parserClass: 'ttsu-parser',
-    parseVisibleObserver: true,
-    filter:
-      '.book-content-page-measure, [aria-hidden="true"], [data-yatsu-current-position-marker], [data-yatsu-bookmark-marker]',
-    addedObserver: {
-      notifyFor: 'div.book-content:not(.book-content-page-measure)',
       checkNested: 'div',
     },
   },

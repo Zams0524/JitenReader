@@ -4,6 +4,7 @@ import { ParseCommand } from '@shared/messages/background/parse.command';
 import { Registry } from '../integration/registry';
 import { Canceled } from '../sequence/canceled';
 import { AbortableSequence } from '../sequence/types';
+import { parseWithYoru } from '../yoru/local-parse';
 import { applyTokens } from './apply-tokens';
 import { getParagraphs } from './get-paragraphs';
 import { Paragraph, RegisterOptions } from './types';
@@ -55,7 +56,14 @@ export class BatchController {
       (s) => [s.sequenceId, s.data.map((f) => f.node.data).join('')] as [number, string],
     );
 
-    new ParseCommand(sequenceData).send(afterSend);
+    parseWithYoru(sequenceData, afterSend).catch((error: unknown) => {
+      // eslint-disable-next-line no-console
+      console.error(
+        '[Yoru] Local parser unavailable, falling back to the background worker:',
+        error,
+      );
+      new ParseCommand(sequenceData).send(afterSend);
+    });
 
     this._pendingBatches.clear();
   }

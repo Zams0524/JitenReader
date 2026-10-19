@@ -138,9 +138,14 @@ export class Parser {
       return group.map((token) => {
         const key = this.buildLookupKey(token.wordId, token.readingIndex);
         const vocabEntry = vocabMap.get(key);
-        const card = cardMap.get(key)!;
+        const card = cardMap.get(key);
 
-        const isParticle = card.partsOfSpeech.includes('prt');
+        // The Yoru local parser can return tokens without a matching vocabulary entry
+        if (!card) {
+          return { ...token, pitchClass: '', rubies: [] };
+        }
+
+        const isParticle = card.partsOfSpeech?.includes('prt');
         const pitchClass = isParticle ? '' : getPitchClass(card.pitchAccents, card.reading);
 
         lastPitchClass = pitchClass || lastPitchClass;

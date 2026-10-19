@@ -56,6 +56,11 @@ export class SequenceManager {
     };
   }
 
+  /** Resolves a sequence with data obtained outside the background worker (Yoru local parser). */
+  public resolveSequence(sequenceId: number, data: unknown): void {
+    this.handleBackgroundMessage(sequenceId, (request) => request.resolve(data));
+  }
+
   private handleBackgroundMessage(
     sequenceId: number,
     fn: (request: PreparedRequest) => void,

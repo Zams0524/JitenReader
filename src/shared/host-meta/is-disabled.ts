@@ -1,3 +1,4 @@
+import { isYoruReaderUrl } from '../yoru/is-yoru-reader-page';
 import { filterHostMeta, resolveMatchingHosts } from './get-host-meta';
 
 export const isDisabled = async (host: string): Promise<boolean> => {
@@ -10,6 +11,11 @@ export const isDisabled = async (host: string): Promise<boolean> => {
 
   if (meta.disabled) {
     return true;
+  }
+
+  // Allow manual parsing in Yoru Reader (file:// / local server) as a fallback
+  if (isYoruReaderUrl(host)) {
+    return false;
   }
 
   return meta.auto;

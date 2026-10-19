@@ -1,4 +1,5 @@
 @use 'sass:map';
+@use 'sass:meta';
 @use '@styles/variables/_colors';
 
 @use '@styles/theme/_common';
@@ -562,3 +563,6 @@ profile-selector {
 }
 
 // #endregion
+
+// Yoru Reader theme overrides, emitted last so they win the cascade
+@include meta.load-css('@styles/yoru/settings-theme');

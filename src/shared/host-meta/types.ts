@@ -38,6 +38,7 @@ export type PredefinedHostMeta = AdditionalHostMeta & {
     | 'ReadwokParser'
     | 'TtsuParser'
     | 'YatsuParser'
+    | 'YoruParser'
     | 'ExStaticParser'
     | 'SatoriReaderParser'
     | 'ManatanMangaParser';

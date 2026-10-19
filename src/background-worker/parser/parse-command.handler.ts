@@ -31,14 +31,14 @@ export class ParseCommandHandler extends BackgroundCommandHandler<ParseCommand> 
     const jitenApiKey = await getConfiguration('jitenApiKey');
 
     if (!jitenApiKey?.length) {
-      await this._failToast.call(sender.tab!.id!);
+      await this._failToast.call(sender.tab?.id);
       await openOptionsPage();
 
       return;
     }
 
     if (await isApiTokenRejected()) {
-      await this._rejectedToast.call(sender.tab!.id!);
+      await this._rejectedToast.call(sender.tab?.id);
 
       return;
     }

@@ -11,6 +11,7 @@ import { ReadwokParser } from './custom-parsers/readwok.parser';
 import { SatoriReaderParser } from './custom-parsers/satori-reader.parser';
 import { TtsuParser } from './custom-parsers/ttsu.parser';
 import { YatsuParser } from './custom-parsers/yatsu.parser';
+import { YoruParser } from './custom-parsers/yoru.parser';
 
 export const getCustomParser = (
   name: Exclude<PredefinedHostMeta['custom'], undefined>,
@@ -28,6 +29,7 @@ export const getCustomParser = (
     ReadwokParser,
     TtsuParser,
     YatsuParser,
+    YoruParser,
     ExStaticParser,
     SatoriReaderParser,
   };

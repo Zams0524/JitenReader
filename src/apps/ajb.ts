@@ -8,6 +8,7 @@ import { FetchStudyDecksCommand } from '@shared/messages/background/fetch-study-
 import { LookupTextCommand } from '@shared/messages/background/lookup-text.command';
 import { onBroadcastMessage } from '@shared/messages/receiving/on-broadcast-message';
 import { receiveBackgroundMessage } from '@shared/messages/receiving/receive-background-message';
+import { isYoruReaderPage } from '@shared/yoru/is-yoru-reader-page';
 import { getFeatures } from './features/get-features';
 import { KeybindManager } from './integration/keybind-manager';
 import { MassReviewAction } from './integration/mass-review-action';
@@ -20,6 +21,8 @@ import { TriggerParser } from './parser/trigger.parser';
 import { PopupManager } from './popup/popup-manager';
 import { StatusBar } from './status-bar/status-bar';
 import { applyWordStyles } from './text-highlighter/apply-word-styles';
+import { YORU_PARSER_META } from './yoru/parser-meta';
+import { installYoruSettingsBridge } from './yoru/settings-bridge';
 
 export class AJB {
   private _lookupKeyManager = new KeybindManager(['lookupSelectionKey']);
@@ -157,6 +160,12 @@ export class AJB {
 
   protected installParsers(): void {
     const { hostEvaluator, parsers } = Registry;
+
+    // Yoru Reader: start the native reader parser right away instead of waiting for host evaluation
+    if (isYoruReaderPage()) {
+      parsers.push(getCustomParser('YoruParser', YORU_PARSER_META));
+    }
+
     const isPredefined = (meta: HostMeta): meta is PredefinedHostMeta => 'id' in meta;
     const generation = this._navigationGeneration;
 
@@ -171,9 +180,12 @@ export class AJB {
         parsers.push(new NoParser(hostEvaluator.rejectionReason));
       }
 
+      // A page with an automatic parser does not also need the manual trigger parser
+      const hasAutoParser = relevantMeta.some((meta) => meta.auto);
+
       for (const meta of relevantMeta) {
         if (!meta.auto) {
-          if (!meta.disabled) {
+          if (!meta.disabled && !hasAutoParser) {
             parsers.push(new TriggerParser(meta));
           }
 
@@ -271,4 +283,11 @@ export class AJB {
   }
 }
 
-new AJB();
+installYoruSettingsBridge();
+
+// Yoru Reader injects the content script before its React app has rendered the document
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => new AJB(), { once: true });
+} else {
+  new AJB();
+}

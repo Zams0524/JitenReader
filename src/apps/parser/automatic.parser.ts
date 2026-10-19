@@ -2,6 +2,7 @@ import { debug } from '@shared/debug';
 import { getParsingPaused } from '@shared/extension/get-parsing-paused';
 import { HostMeta } from '@shared/host-meta/types';
 import { onBroadcastMessage } from '@shared/messages/receiving/on-broadcast-message';
+import { isYoruReaderPage } from '@shared/yoru/is-yoru-reader-page';
 import { Registry } from '../integration/registry';
 import { BaseParser } from './base.parser';
 
@@ -149,6 +150,12 @@ export class AutomaticParser extends BaseParser {
   protected addedObserverCallback(nodes: HTMLElement[]): void {
     if (!this._visibleObserver) {
       return this.parseNodes(nodes, this.filter);
+    }
+
+    // Yoru Reader (file:// / local server): parse right away; the IntersectionObserver can miss
+    // nodes React mounts before the observer has a layout to report.
+    if (isYoruReaderPage()) {
+      this.visibleObserverOnEnter(nodes, this._visibleObserver, this.filter);
     }
 
     nodes.forEach((node) => this._visibleObserver?.observe(node));

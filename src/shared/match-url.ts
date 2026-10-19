@@ -28,14 +28,17 @@ export const matchUrl = (matchPattern: string, host: string): boolean => {
     return false;
   }
 
+  // file:// URLs (Yoru Reader) can have no path part
+  const patternPathSafe = patternPath || '*';
+  const hostPathSafe = hostPath || '';
   const hostRegex = new RegExp(`^${patternHost.replace(/\./g, '\\.').replace(/\*/g, '.*')}$`);
-  const pathRegex = new RegExp(`^${patternPath.replace(/\./g, '\\.').replace(/\*/g, '.*')}$`);
+  const pathRegex = new RegExp(`^${patternPathSafe.replace(/\./g, '\\.').replace(/\*/g, '.*')}$`);
 
   if (!hostHost.match(hostRegex)) {
     return false;
   }
 
-  if (!hostPath.match(pathRegex)) {
+  if (!hostPathSafe.match(pathRegex)) {
     return false;
   }
 
